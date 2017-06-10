@@ -59,14 +59,21 @@ class User
      *
      * @ORM\Column(name="appRoleId", type="integer", nullable=false)
      */
-    private $approleid;
+    private $approleid = '2';
 
     /**
      * @var boolean
      *
-     * @ORM\Column(name="status", type="boolean", nullable=true)
+     * @ORM\Column(name="status", type="boolean", nullable=false)
      */
-    private $status;
+    private $status = '1';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="authToken", type="string", length=64, nullable=true)
+     */
+    private $authtoken;
 
     /**
      * @var integer
@@ -269,6 +276,30 @@ class User
     public function getStatus()
     {
         return $this->status;
+    }
+
+    /**
+     * Set authtoken
+     *
+     * @param string $authtoken
+     *
+     * @return User
+     */
+    public function setAuthtoken($authtoken)
+    {
+        $this->authtoken = $authtoken;
+
+        return $this;
+    }
+
+    /**
+     * Get authtoken
+     *
+     * @return string
+     */
+    public function getAuthtoken()
+    {
+        return $this->authtoken;
     }
 
     /**

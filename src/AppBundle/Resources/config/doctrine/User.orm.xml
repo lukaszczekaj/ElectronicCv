@@ -29,8 +29,18 @@
     <field name="approleid" type="integer" column="appRoleId" nullable="false">
       <options>
         <option name="unsigned"/>
+        <option name="default">2</option>
       </options>
     </field>
-    <field name="status" type="boolean" column="status" nullable="true"/>
+    <field name="status" type="boolean" column="status" nullable="false">
+      <options>
+        <option name="default">1</option>
+      </options>
+    </field>
+    <field name="authtoken" type="string" column="authToken" length="64" nullable="true">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
   </entity>
 </doctrine-mapping>
