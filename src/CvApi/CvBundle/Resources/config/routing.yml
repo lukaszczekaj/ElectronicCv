@@ -1,5 +1,0 @@
-cv_api_cv_homepage:
-    resource: "@CvApiCvBundle/Controller/ApiController.php"
-    prefix: /api/
-    type: rest
-    
