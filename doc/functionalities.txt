@@ -1,0 +1,46 @@
+1. Logowanie
+    - logowanie za pomocą adresu e-mail i hasła (do restów wykorzystywany będzie wygenerowany token)
+
+2. Rejestracja
+    - rejestracja użytkownika: adres e-mail i wdukrotnie hasło
+
+3. Przypomnienie hasła
+    - na podany adres e-mail wysłanie nowego hasła
+
+4. Wysyłka maili
+    - uniwersalna metoda do wysyłania maila (najlepiej zaimplementować phpmailer).
+
+5. Panel użytkownika
+    a) edycja profilu
+        - edycja pól: imie, nazwisko, data urodzenia, adres, telefon, e-mail, PESEL, zdjęcie profilowe
+        - zmiana hasła
+    b) dodanie CV
+        - dodanie ogólnych informacji w CV: cel zawodowy, wybór z listy/checkboxów dodatkowych informacji już prowadzonych, lub wprowadzenie nowych
+        - dodanie wykrztałcenia
+        - dodanie miejsca pracy
+        - dodanie dodakowych umiejętności (kursy/szkolenia/certyfikaty)
+        - linki (do swoich portali, wyników prac)
+    c) edycja każdego komponentu CV
+    d) generowanie PDF'a z wybranego CV
+
+6. Panel admina
+    a) podgląd uzytkowników z możliwością blokowania kont
+    b) podgląd zapisanych CV (może być wyświetlane/zwracane razem z użytkownikami)
+    (...)
+
+7. Silnik wyszukiwarki
+    - przyjmuje dwa parametry, pierwszy po czym szukać a drugi słowo kluczowe, (po czym: po userach, po CV; słowo kluczowe: "zenek", "przewozy krajowe")
+
+
+
+Informacje ogólne:
+
+- każde zapytanie dotyczące pobrania wielu informacji (pobranie wiele userów, wiele CV) powinna zapewnić przedział pobieranych informacji, np: pobranie rekordu od 10 do 20 po to aby w panelu admina tworzyć strony z wynikami wyświetleń
+- przy każdym reście oprócz prośby o dane lub wysłanie danych doklejany będzie token autoryzujący, co odświerzenie strony sprawdzany będzie token autoryzujący który przechowywany będzie w local storage
+
+
+
+Changelog:
+
+2017-03-25
+Pierwsza wersja dokumentu
