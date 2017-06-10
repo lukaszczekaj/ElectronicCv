@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * User
  *
- * @ORM\Table(name="user")
+ * @ORM\Table(name="user", uniqueConstraints={@ORM\UniqueConstraint(name="authToken", columns={"authToken"})})
  * @ORM\Entity
  */
 class User
@@ -25,6 +25,20 @@ class User
      * @ORM\Column(name="pass", type="string", length=64, nullable=false)
      */
     private $pass;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="firstName", type="string", length=100, nullable=true)
+     */
+    private $firstname;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="lastName", type="string", length=100, nullable=true)
+     */
+    private $lastname;
 
     /**
      * @var string
@@ -132,6 +146,54 @@ class User
     public function getPass()
     {
         return $this->pass;
+    }
+
+    /**
+     * Set firstname
+     *
+     * @param string $firstname
+     *
+     * @return User
+     */
+    public function setFirstname($firstname)
+    {
+        $this->firstname = $firstname;
+
+        return $this;
+    }
+
+    /**
+     * Get firstname
+     *
+     * @return string
+     */
+    public function getFirstname()
+    {
+        return $this->firstname;
+    }
+
+    /**
+     * Set lastname
+     *
+     * @param string $lastname
+     *
+     * @return User
+     */
+    public function setLastname($lastname)
+    {
+        $this->lastname = $lastname;
+
+        return $this;
+    }
+
+    /**
+     * Get lastname
+     *
+     * @return string
+     */
+    public function getLastname()
+    {
+        return $this->lastname;
     }
 
     /**
