@@ -2,7 +2,7 @@
     - logowanie za pomocą adresu e-mail i hasła (do restów wykorzystywany będzie wygenerowany token)
 
 2. Rejestracja
-    - rejestracja użytkownika: adres e-mail i wdukrotnie hasło
+    - rejestracja użytkownika: adres e-mail, imie, nazwisko i wdukrotnie hasło
 
 3. Przypomnienie hasła
     - na podany adres e-mail wysłanie nowego hasła
@@ -36,7 +36,7 @@
 Informacje ogólne:
 
 - każde zapytanie dotyczące pobrania wielu informacji (pobranie wiele userów, wiele CV) powinna zapewnić przedział pobieranych informacji, np: pobranie rekordu od 10 do 20 po to aby w panelu admina tworzyć strony z wynikami wyświetleń
-- przy każdym reście oprócz prośby o dane lub wysłanie danych doklejany będzie token autoryzujący, co odświerzenie strony sprawdzany będzie token autoryzujący który przechowywany będzie w local storage
+- przy każdym reście oprócz prośby o dane lub wysłanie danych doklejany będzie token autoryzujący, co odświeżenie strony sprawdzany będzie token autoryzujący który przechowywany będzie w session storage
 
 
 

@@ -11,6 +11,9 @@ use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\View\View;
 use AppBundle\Entity\User;
 use AppBundle\Entity\Education;
+use AppBundle\Entity\Workplace;
+use AppBundle\Entity\AdditionalSkills;
+use AppBundle\Entity\Languages;
 
 /**
  * Description of ApiController
@@ -193,6 +196,85 @@ class ApiController extends FOSRestController {
         $em->flush();
         return new Response('API: Dodano wykrztałcenie ', Response::HTTP_OK);
     }
+    
+    /**
+     * @Rest\Post("/add-workplace/")
+     */
+    public function addWorkplaceAction(Request $request) {
+        $token = $request->get('authToken');
+        if (empty($token)) {
+            return new Response("API: Brak kompletnych danych ", Response::HTTP_NOT_ACCEPTABLE);
+        }
+        $em = $this->getDoctrine()->getEntityManager();
+        $existUser = $em->getRepository('AppBundle:User')->findOneBy(array('authtoken' => $token));
+        if (!$existUser) {
+            return new Response("API: Niepoprawna identyfikacja", Response::HTTP_FORBIDDEN);
+        }
+        $data = $request->request->all();
+
+        $workplace = new Workplace();
+        $workplace->setDescription($data['description']);
+        $workplace->setUserid($existUser->getId());
+        if (isset($data['date_of']) && !empty($data['date_of'])) {
+            $workplace->setDateOf(\DateTime::createFromFormat("m/d/Y", $data['date_of']));
+        }
+        if (isset($data['date_to']) && !empty($data['date_to'])) {
+            $workplace->setDateTo(\DateTime::createFromFormat("m/d/Y", $data['date_to']));
+        }
+        $em->persist($workplace);
+        $em->flush();
+        return new Response('API: Dodano miejsce pracy ', Response::HTTP_OK);
+    }
+    
+    /**
+     * @Rest\Post("/add-languages/")
+     */
+    public function addLanguagesAction(Request $request) {
+        $token = $request->get('authToken');
+        if (empty($token)) {
+            return new Response("API: Brak kompletnych danych ", Response::HTTP_NOT_ACCEPTABLE);
+        }
+        $em = $this->getDoctrine()->getEntityManager();
+        $existUser = $em->getRepository('AppBundle:User')->findOneBy(array('authtoken' => $token));
+        if (!$existUser) {
+            return new Response("API: Niepoprawna identyfikacja", Response::HTTP_FORBIDDEN);
+        }
+        $data = $request->request->all();
+
+        $languages = new Languages();
+        $languages->setDescription($data['description']);
+        $languages->setName($data['name']);
+        $languages->setUserid($existUser->getId());
+        $em->persist($languages);
+        $em->flush();
+        return new Response('API: Dodano język ', Response::HTTP_OK);
+    }
+    
+    /**
+     * @Rest\Post("/add-additional-skills/")
+     */
+    public function addAddtionalSkillsAction(Request $request) {
+        $token = $request->get('authToken');
+        if (empty($token)) {
+            return new Response("API: Brak kompletnych danych ", Response::HTTP_NOT_ACCEPTABLE);
+        }
+        $em = $this->getDoctrine()->getEntityManager();
+        $existUser = $em->getRepository('AppBundle:User')->findOneBy(array('authtoken' => $token));
+        if (!$existUser) {
+            return new Response("API: Niepoprawna identyfikacja", Response::HTTP_FORBIDDEN);
+        }
+        $data = $request->request->all();
+
+        $additionalSkills = new AdditionalSkills();
+        $additionalSkills->setDescription($data['description']);
+        $additionalSkills->setUserid($existUser->getId());
+        if (isset($data['date']) && !empty($data['date'])) {
+            $additionalSkills->setDate(\DateTime::createFromFormat("m/d/Y", $data['date']));
+        }
+        $em->persist($additionalSkills);
+        $em->flush();
+        return new Response('API: Dodano dodatkową umiejętność ', Response::HTTP_OK);
+    }
 
     /**
      * @Rest\Get("/list-education/{token}")
@@ -209,11 +291,59 @@ class ApiController extends FOSRestController {
         $allEducation = $em->getRepository('AppBundle:Education')->findBy(array('userid' => $existUser->getId()));
         return $allEducation;
     }
+    
+    /**
+     * @Rest\Get("/list-languages/{token}")
+     */
+    public function getUserLanguagesAction($token) {
+        if (empty($token)) {
+            return new Response("API: Brak kompletnych danych ", Response::HTTP_NOT_ACCEPTABLE);
+        }
+        $em = $this->getDoctrine()->getEntityManager();
+        $existUser = $em->getRepository('AppBundle:User')->findOneBy(array('authtoken' => $token));
+        if (!$existUser) {
+            return new Response("API: Niepoprawna identyfikacja", Response::HTTP_FORBIDDEN);
+        }
+        $return = $em->getRepository('AppBundle:Languages')->findBy(array('userid' => $existUser->getId()));
+        return $return;
+    }
+    
+    /**
+     * @Rest\Get("/list-additional-skills/{token}")
+     */
+    public function getUserAdditionalSkillsAction($token) {
+        if (empty($token)) {
+            return new Response("API: Brak kompletnych danych ", Response::HTTP_NOT_ACCEPTABLE);
+        }
+        $em = $this->getDoctrine()->getEntityManager();
+        $existUser = $em->getRepository('AppBundle:User')->findOneBy(array('authtoken' => $token));
+        if (!$existUser) {
+            return new Response("API: Niepoprawna identyfikacja", Response::HTTP_FORBIDDEN);
+        }
+        $return = $em->getRepository('AppBundle:AdditionalSkills')->findBy(array('userid' => $existUser->getId()));
+        return $return;
+    }
+    
+    /**
+     * @Rest\Get("/list-workplace/{token}")
+     */
+    public function getUserWorkplaceAction($token) {
+        if (empty($token)) {
+            return new Response("API: Brak kompletnych danych ", Response::HTTP_NOT_ACCEPTABLE);
+        }
+        $em = $this->getDoctrine()->getEntityManager();
+        $existUser = $em->getRepository('AppBundle:User')->findOneBy(array('authtoken' => $token));
+        if (!$existUser) {
+            return new Response("API: Niepoprawna identyfikacja", Response::HTTP_FORBIDDEN);
+        }
+        $return = $em->getRepository('AppBundle:Workplace')->findBy(array('userid' => $existUser->getId()));
+        return $return;
+    }
 
     /**
      * @Rest\Delete("/remove-education/{token}/{id}")
      */
-    public function deleteAction($token, $id) {
+    public function deleteEducationAction($token, $id) {
         if (empty($token)) {
             return new Response("API: Brak kompletnych danych ", Response::HTTP_NOT_ACCEPTABLE);
         }
@@ -223,17 +353,95 @@ class ApiController extends FOSRestController {
             return new Response("API: Niepoprawna identyfikacja", Response::HTTP_FORBIDDEN);
         }
 
-        $education = $em->getRepository('AppBundle:Education')->find($id);
+        $row = $em->getRepository('AppBundle:Education')->find($id);
 
-        if (empty($education)) {
+        if (empty($row)) {
             return new Response("Brak danych", Response::HTTP_NOT_FOUND);
         }
-        if ($education->getUserid() !== $existUser->getId()) {
+        if ($row->getUserid() !== $existUser->getId()) {
             return new Response("Brak uprawnień", Response::HTTP_UNAUTHORIZED);
         }
-        $em->remove($education);
+        $em->remove($row);
         $em->flush();
         return new Response("Wykrztałcenie usunięte");
+    }
+    
+    /**
+     * @Rest\Delete("/remove-workplace/{token}/{id}")
+     */
+    public function deleteWorkplaceAction($token, $id) {
+        if (empty($token)) {
+            return new Response("API: Brak kompletnych danych ", Response::HTTP_NOT_ACCEPTABLE);
+        }
+        $em = $this->getDoctrine()->getEntityManager();
+        $existUser = $em->getRepository('AppBundle:User')->findOneBy(array('authtoken' => $token));
+        if (!$existUser) {
+            return new Response("API: Niepoprawna identyfikacja", Response::HTTP_FORBIDDEN);
+        }
+
+        $row = $em->getRepository('AppBundle:Workplace')->find($id);
+
+        if (empty($row)) {
+            return new Response("Brak danych", Response::HTTP_NOT_FOUND);
+        }
+        if ($row->getUserid() !== $existUser->getId()) {
+            return new Response("Brak uprawnień", Response::HTTP_UNAUTHORIZED);
+        }
+        $em->remove($row);
+        $em->flush();
+        return new Response("Miejsce pracy usunięte");
+    }
+    
+    /**
+     * @Rest\Delete("/remove-languages/{token}/{id}")
+     */
+    public function deleteLanguagesAction($token, $id) {
+        if (empty($token)) {
+            return new Response("API: Brak kompletnych danych ", Response::HTTP_NOT_ACCEPTABLE);
+        }
+        $em = $this->getDoctrine()->getEntityManager();
+        $existUser = $em->getRepository('AppBundle:User')->findOneBy(array('authtoken' => $token));
+        if (!$existUser) {
+            return new Response("API: Niepoprawna identyfikacja", Response::HTTP_FORBIDDEN);
+        }
+
+        $row = $em->getRepository('AppBundle:Languages')->find($id);
+
+        if (empty($row)) {
+            return new Response("Brak danych", Response::HTTP_NOT_FOUND);
+        }
+        if ($row->getUserid() !== $existUser->getId()) {
+            return new Response("Brak uprawnień", Response::HTTP_UNAUTHORIZED);
+        }
+        $em->remove($row);
+        $em->flush();
+        return new Response("Miejsce pracy usunięte");
+    }
+    
+    /**
+     * @Rest\Delete("/remove-additional-skills/{token}/{id}")
+     */
+    public function deleteAdditionalSkillsAction($token, $id) {
+        if (empty($token)) {
+            return new Response("API: Brak kompletnych danych ", Response::HTTP_NOT_ACCEPTABLE);
+        }
+        $em = $this->getDoctrine()->getEntityManager();
+        $existUser = $em->getRepository('AppBundle:User')->findOneBy(array('authtoken' => $token));
+        if (!$existUser) {
+            return new Response("API: Niepoprawna identyfikacja", Response::HTTP_FORBIDDEN);
+        }
+
+        $row = $em->getRepository('AppBundle:AdditionalSkills')->find($id);
+
+        if (empty($row)) {
+            return new Response("Brak danych", Response::HTTP_NOT_FOUND);
+        }
+        if ($row->getUserid() !== $existUser->getId()) {
+            return new Response("Brak uprawnień", Response::HTTP_UNAUTHORIZED);
+        }
+        $em->remove($row);
+        $em->flush();
+        return new Response("Dodatkowa umiejętność usunięta");
     }
 
 }
