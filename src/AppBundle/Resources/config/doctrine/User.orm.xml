@@ -31,7 +31,23 @@
     </field>
     <field name="dateregister" type="datetime" column="dateRegister" nullable="true"/>
     <field name="datelastlogon" type="datetime" column="dateLastLogon" nullable="true"/>
-    <field name="pesel" type="string" column="pesel" length="11" nullable="true">
+    <field name="birthdate" type="datetime" column="birthDate" nullable="true"/>
+    <field name="maritalstatus" type="string" column="maritalStatus" length="255" nullable="true">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="birthplace" type="string" column="birthPlace" length="255" nullable="true">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="addressstreet" type="string" column="addressStreet" length="255" nullable="true">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="addresspost" type="string" column="addressPost" length="255" nullable="true">
       <options>
         <option name="fixed"/>
       </options>

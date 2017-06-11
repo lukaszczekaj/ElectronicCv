@@ -4,6 +4,11 @@
     <id name="id" type="integer" column="id">
       <generator strategy="IDENTITY"/>
     </id>
+    <field name="userid" type="integer" column="userid" nullable="false">
+      <options>
+        <option name="unsigned"/>
+      </options>
+    </field>
     <field name="dateOf" type="datetime" column="date_of" nullable="true"/>
     <field name="dateTo" type="datetime" column="date_to" nullable="true"/>
     <field name="description" type="text" column="description" length="65535" nullable="true">

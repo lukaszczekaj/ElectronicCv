@@ -62,11 +62,39 @@ class User
     private $datelastlogon;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="birthDate", type="datetime", nullable=true)
+     */
+    private $birthdate;
+
+    /**
      * @var string
      *
-     * @ORM\Column(name="pesel", type="string", length=11, nullable=true)
+     * @ORM\Column(name="maritalStatus", type="string", length=255, nullable=true)
      */
-    private $pesel;
+    private $maritalstatus;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="birthPlace", type="string", length=255, nullable=true)
+     */
+    private $birthplace;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="addressStreet", type="string", length=255, nullable=true)
+     */
+    private $addressstreet;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="addressPost", type="string", length=255, nullable=true)
+     */
+    private $addresspost;
 
     /**
      * @var integer
@@ -269,27 +297,123 @@ class User
     }
 
     /**
-     * Set pesel
+     * Set birthdate
      *
-     * @param string $pesel
+     * @param \DateTime $birthdate
      *
      * @return User
      */
-    public function setPesel($pesel)
+    public function setBirthdate($birthdate)
     {
-        $this->pesel = $pesel;
+        $this->birthdate = $birthdate;
 
         return $this;
     }
 
     /**
-     * Get pesel
+     * Get birthdate
+     *
+     * @return \DateTime
+     */
+    public function getBirthdate()
+    {
+        return $this->birthdate;
+    }
+
+    /**
+     * Set maritalstatus
+     *
+     * @param string $maritalstatus
+     *
+     * @return User
+     */
+    public function setMaritalstatus($maritalstatus)
+    {
+        $this->maritalstatus = $maritalstatus;
+
+        return $this;
+    }
+
+    /**
+     * Get maritalstatus
      *
      * @return string
      */
-    public function getPesel()
+    public function getMaritalstatus()
     {
-        return $this->pesel;
+        return $this->maritalstatus;
+    }
+
+    /**
+     * Set birthplace
+     *
+     * @param string $birthplace
+     *
+     * @return User
+     */
+    public function setBirthplace($birthplace)
+    {
+        $this->birthplace = $birthplace;
+
+        return $this;
+    }
+
+    /**
+     * Get birthplace
+     *
+     * @return string
+     */
+    public function getBirthplace()
+    {
+        return $this->birthplace;
+    }
+
+    /**
+     * Set addressstreet
+     *
+     * @param string $addressstreet
+     *
+     * @return User
+     */
+    public function setAddressstreet($addressstreet)
+    {
+        $this->addressstreet = $addressstreet;
+
+        return $this;
+    }
+
+    /**
+     * Get addressstreet
+     *
+     * @return string
+     */
+    public function getAddressstreet()
+    {
+        return $this->addressstreet;
+    }
+
+    /**
+     * Set addresspost
+     *
+     * @param string $addresspost
+     *
+     * @return User
+     */
+    public function setAddresspost($addresspost)
+    {
+        $this->addresspost = $addresspost;
+
+        return $this;
+    }
+
+    /**
+     * Get addresspost
+     *
+     * @return string
+     */
+    public function getAddresspost()
+    {
+        return $this->addresspost;
     }
 
     /**

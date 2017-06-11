@@ -108,7 +108,13 @@ class ApiController extends FOSRestController {
         $data = $request->request->all();
         $existUser->setFirstname($data['firstName']);
         $existUser->setLastname($data['lastName']);
-        $existUser->setPesel($data['pesel']);
+        if (isset($data['birthDate']) && !empty($data['birthDate'])) {
+            $existUser->setBirthdate(\DateTime::createFromFormat("m/d/Y", $data['birthDate']));
+        }
+        $existUser->setBirthplace($data['birthPlace']);
+        $existUser->setAddressstreet($data['addressStreet']);
+        $existUser->setAddresspost($data['addressPost']);
+        $existUser->setMaritalstatus($data['maritalStatus']);
         $em->flush();
         return new Response('API: Zapisano zmiany', Response::HTTP_OK);
     }

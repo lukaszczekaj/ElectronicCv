@@ -8,7 +8,7 @@
     - na podany adres e-mail wysłanie nowego hasła
 
 4. Wysyłka maili
-    - uniwersalna metoda do wysyłania maila (najlepiej zaimplementować phpmailer).
+    - uniwersalna metoda do wysyłania maila (najlepiej zaimplementować phpmailer lub wbudowany mailer w frameworka).
 
 5. Panel użytkownika
     a) edycja profilu

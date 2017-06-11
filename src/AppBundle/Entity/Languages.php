@@ -13,6 +13,13 @@ use Doctrine\ORM\Mapping as ORM;
 class Languages
 {
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="userid", type="integer", nullable=false)
+     */
+    private $userid;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255, nullable=true)
@@ -36,6 +43,30 @@ class Languages
     private $id;
 
 
+
+    /**
+     * Set userid
+     *
+     * @param integer $userid
+     *
+     * @return Languages
+     */
+    public function setUserid($userid)
+    {
+        $this->userid = $userid;
+
+        return $this;
+    }
+
+    /**
+     * Get userid
+     *
+     * @return integer
+     */
+    public function getUserid()
+    {
+        return $this->userid;
+    }
 
     /**
      * Set name
