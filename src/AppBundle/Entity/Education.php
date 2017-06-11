@@ -13,6 +13,13 @@ use Doctrine\ORM\Mapping as ORM;
 class Education
 {
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="userid", type="integer", nullable=false)
+     */
+    private $userid;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="date_of", type="datetime", nullable=true)
@@ -43,6 +50,30 @@ class Education
     private $id;
 
 
+
+    /**
+     * Set userid
+     *
+     * @param integer $userid
+     *
+     * @return Education
+     */
+    public function setUserid($userid)
+    {
+        $this->userid = $userid;
+
+        return $this;
+    }
+
+    /**
+     * Get userid
+     *
+     * @return integer
+     */
+    public function getUserid()
+    {
+        return $this->userid;
+    }
 
     /**
      * Set dateOf

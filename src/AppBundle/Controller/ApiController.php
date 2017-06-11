@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\View\View;
 use AppBundle\Entity\User;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use AppBundle\Entity\Education;
 
 /**
  * Description of ApiController
@@ -157,6 +157,77 @@ class ApiController extends FOSRestController {
         $existUser->setPass(hash('sha256', $data['password']));
         $em->flush();
         return new Response('API: Hasło zmienione', Response::HTTP_OK);
+    }
+
+    /**
+     * @Rest\Post("/add-education/")
+     */
+    public function addEducationAction(Request $request) {
+        $token = $request->get('authToken');
+        if (empty($token)) {
+            return new Response("API: Brak kompletnych danych ", Response::HTTP_NOT_ACCEPTABLE);
+        }
+        $em = $this->getDoctrine()->getEntityManager();
+        $existUser = $em->getRepository('AppBundle:User')->findOneBy(array('authtoken' => $token));
+        if (!$existUser) {
+            return new Response("API: Niepoprawna identyfikacja", Response::HTTP_FORBIDDEN);
+        }
+        $data = $request->request->all();
+
+        $education = new Education();
+        $education->setDescription($data['description']);
+        $education->setUserid($existUser->getId());
+        if (isset($data['date_of']) && !empty($data['date_of'])) {
+            $education->setDateOf(\DateTime::createFromFormat("m/d/Y", $data['date_of']));
+        }
+        if (isset($data['date_to']) && !empty($data['date_to'])) {
+            $education->setDateTo(\DateTime::createFromFormat("m/d/Y", $data['date_to']));
+        }
+        $em->persist($education);
+        $em->flush();
+        return new Response('API: Dodano wykrztałcenie ', Response::HTTP_OK);
+    }
+
+    /**
+     * @Rest\Get("/list-education/{token}")
+     */
+    public function getUserEducationAction($token) {
+        if (empty($token)) {
+            return new Response("API: Brak kompletnych danych ", Response::HTTP_NOT_ACCEPTABLE);
+        }
+        $em = $this->getDoctrine()->getEntityManager();
+        $existUser = $em->getRepository('AppBundle:User')->findOneBy(array('authtoken' => $token));
+        if (!$existUser) {
+            return new Response("API: Niepoprawna identyfikacja", Response::HTTP_FORBIDDEN);
+        }
+        $allEducation = $em->getRepository('AppBundle:Education')->findBy(array('userid' => $existUser->getId()));
+        return $allEducation;
+    }
+
+    /**
+     * @Rest\Delete("/remove-education/{token}/{id}")
+     */
+    public function deleteAction($token, $id) {
+        if (empty($token)) {
+            return new Response("API: Brak kompletnych danych ", Response::HTTP_NOT_ACCEPTABLE);
+        }
+        $em = $this->getDoctrine()->getEntityManager();
+        $existUser = $em->getRepository('AppBundle:User')->findOneBy(array('authtoken' => $token));
+        if (!$existUser) {
+            return new Response("API: Niepoprawna identyfikacja", Response::HTTP_FORBIDDEN);
+        }
+
+        $education = $em->getRepository('AppBundle:Education')->find($id);
+
+        if (empty($education)) {
+            return new Response("Brak danych", Response::HTTP_NOT_FOUND);
+        }
+        if ($education->getUserid() !== $existUser->getId()) {
+            return new Response("Brak uprawnień", Response::HTTP_UNAUTHORIZED);
+        }
+        $em->remove($education);
+        $em->flush();
+        return new Response("Wykrztałcenie usunięte");
     }
 
 }
