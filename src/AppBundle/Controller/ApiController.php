@@ -38,14 +38,14 @@ class ApiController extends FOSRestController {
         $pass = $request->get('password');
         $retypePass = $request->get('retype-password');
         if (empty($mail) || empty($pass) || empty($retypePass) || empty($firstName) || empty($lastName)) {
-            return new View("API: Brak kompletnych danych " . json_encode($mail), Response::HTTP_NOT_ACCEPTABLE);
+            return new Response("API: Brak kompletnych danych ", Response::HTTP_NOT_ACCEPTABLE);
         }
         $existUser = $this->getDoctrine()->getRepository('AppBundle:User')->findOneBy(array('mail' => $mail));
         if ($existUser) {
-            return new View("API: Taki e-mail już istnieje w bazie", Response::HTTP_NOT_ACCEPTABLE);
+            return new Response("API: Taki e-mail już istnieje w bazie", Response::HTTP_NOT_ACCEPTABLE);
         }
         if ($pass !== $retypePass) {
-            return new View("API: Hasła nie są identyczne", Response::HTTP_NOT_ACCEPTABLE);
+            return new Response("API: Hasła nie są identyczne", Response::HTTP_NOT_ACCEPTABLE);
         }
         $user->setMail($mail);
         $user->setFirstname($firstName);
@@ -56,9 +56,9 @@ class ApiController extends FOSRestController {
             $em->persist($user);
             $em->flush();
         } catch (Exception $exc) {
-            return new View($exc->getMessage, Response::HTTP_INTERNAL_SERVER_ERROR);
+            return new Response($exc->getMessage, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-        return new View("Zarejestrowano poprawnie", Response::HTTP_OK);
+        return new Response("API: Zarejestrowano poprawnie", Response::HTTP_OK);
     }
 
     /**
@@ -68,16 +68,16 @@ class ApiController extends FOSRestController {
         $mail = $request->get('mail');
         $pass = $request->get('password');
         if (empty($mail) || empty($pass)) {
-            return new View("API: Brak kompletnych danych ", Response::HTTP_NOT_ACCEPTABLE);
+            return new Response("API: Brak kompletnych danych ", Response::HTTP_NOT_ACCEPTABLE);
         }
         $em = $this->getDoctrine()->getEntityManager();
         $existUser = $em->getRepository('AppBundle:User')->findOneBy(array('mail' => $mail));
         if (!$existUser) {
-            return new View("API: Niepoprawne dane logowania", Response::HTTP_NOT_ACCEPTABLE);
+            return new Response("API: Niepoprawne dane logowania", Response::HTTP_NOT_ACCEPTABLE);
         }
 
         if ($existUser->getPass() !== hash('sha256', $pass)) {
-            return new View("API: Niepoprawne dane logowania", Response::HTTP_NOT_ACCEPTABLE);
+            return new Response("API: Niepoprawne dane logowania", Response::HTTP_NOT_ACCEPTABLE);
         }
 
         $existUser->setAuthtoken(md5(uniqid()));
@@ -89,7 +89,7 @@ class ApiController extends FOSRestController {
             'authToken' => $existUser->getAuthtoken(),
             'name' => sprintf('%s %s', $existUser->getFirstname(), $existUser->getLastname())
         );
-        return new View(json_encode($response), Response::HTTP_OK);
+        return new Response(json_encode($response), Response::HTTP_OK);
     }
 
     /**
@@ -98,13 +98,13 @@ class ApiController extends FOSRestController {
     public function updateUserProfileAction(Request $request) {
         $token = $request->get('authToken');
         if (empty($token)) {
-            return new View("API: Brak kompletnych danych ", Response::HTTP_NOT_ACCEPTABLE);
+            return new Response("API: Brak kompletnych danych ", Response::HTTP_NOT_ACCEPTABLE);
         }
         $existUser = $this->getUserByAuthToken($token);
         if (!$existUser) {
-            return new View("API: Niepoprawna identyfikacja", Response::HTTP_NOT_ACCEPTABLE);
+            return new Response("API: Niepoprawna identyfikacja", Response::HTTP_FORBIDDEN);
         }
-        return new View('API: Zapisano', Response::HTTP_OK);
+        return new Response('API: Zapisano', Response::HTTP_OK);
     }
 
     private function getUserByAuthToken($token) {
@@ -112,4 +112,19 @@ class ApiController extends FOSRestController {
         return $em->getRepository('AppBundle:User')->findOneBy(array('authtoken' => $token));
     }
 
+    /**
+     * @Rest\Get("/user-data/{token}")
+     */
+    public function getUserDataAction($token, Request $request) {
+        if (empty($token)) {
+            return new Response("API: Brak kompletnych danych ", Response::HTTP_NOT_ACCEPTABLE);
+        }
+        $existUser = $this->getUserByAuthToken($token);
+        if (!$existUser) {
+            return new Response("API: Niepoprawna identyfikacja", Response::HTTP_FORBIDDEN);
+        }
+        $existUser->setPass(null);
+        return $existUser;
+    }
+    
 }
