@@ -100,11 +100,17 @@ class ApiController extends FOSRestController {
         if (empty($token)) {
             return new Response("API: Brak kompletnych danych ", Response::HTTP_NOT_ACCEPTABLE);
         }
-        $existUser = $this->getUserByAuthToken($token);
+        $em = $this->getDoctrine()->getEntityManager();
+        $existUser = $em->getRepository('AppBundle:User')->findOneBy(array('authtoken' => $token));
         if (!$existUser) {
             return new Response("API: Niepoprawna identyfikacja", Response::HTTP_FORBIDDEN);
         }
-        return new Response('API: Zapisano', Response::HTTP_OK);
+        $data = $request->request->all();
+        $existUser->setFirstname($data['firstName']);
+        $existUser->setLastname($data['lastName']);
+        $existUser->setPesel($data['pesel']);
+        $em->flush();
+        return new Response('API: Zapisano zmiany', Response::HTTP_OK);
     }
 
     private function getUserByAuthToken($token) {
@@ -126,5 +132,31 @@ class ApiController extends FOSRestController {
         $existUser->setPass(null);
         return $existUser;
     }
-    
+
+    /**
+     * @Rest\Post("/change-pass/")
+     */
+    public function changeUserPassAction(Request $request) {
+        $token = $request->get('authToken');
+        if (empty($token)) {
+            return new Response("API: Brak kompletnych danych ", Response::HTTP_NOT_ACCEPTABLE);
+        }
+        $em = $this->getDoctrine()->getEntityManager();
+        $existUser = $em->getRepository('AppBundle:User')->findOneBy(array('authtoken' => $token));
+        if (!$existUser) {
+            return new Response("API: Niepoprawna identyfikacja", Response::HTTP_FORBIDDEN);
+        }
+
+        $data = $request->request->all();
+        if ($existUser->getPass() !== hash('sha256', $data['passwordActual'])) {
+            return new Response("API: Obecne hasło jest błędne", Response::HTTP_NOT_ACCEPTABLE);
+        }
+        if ($data['password'] !== $data['passwordAgain']) {
+            return new Response("API: Nowe hasła nie sa identyczne", Response::HTTP_NOT_ACCEPTABLE);
+        }
+        $existUser->setPass(hash('sha256', $data['password']));
+        $em->flush();
+        return new Response('API: Hasło zmienione', Response::HTTP_OK);
+    }
+
 }
