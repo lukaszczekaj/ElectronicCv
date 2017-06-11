@@ -43,6 +43,13 @@ class User
     /**
      * @var string
      *
+     * @ORM\Column(name="phone", type="string", length=30, nullable=true)
+     */
+    private $phone;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="imageUrl", type="text", length=65535, nullable=true)
      */
     private $imageurl;
@@ -50,9 +57,9 @@ class User
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="dateRegister", type="datetime", nullable=true)
+     * @ORM\Column(name="dateRegister", type="datetime", nullable=false)
      */
-    private $dateregister;
+    private $dateregister = 'CURRENT_TIMESTAMP';
 
     /**
      * @var \DateTime
@@ -222,6 +229,30 @@ class User
     public function getLastname()
     {
         return $this->lastname;
+    }
+
+    /**
+     * Set phone
+     *
+     * @param string $phone
+     *
+     * @return User
+     */
+    public function setPhone($phone)
+    {
+        $this->phone = $phone;
+
+        return $this;
+    }
+
+    /**
+     * Get phone
+     *
+     * @return string
+     */
+    public function getPhone()
+    {
+        return $this->phone;
     }
 
     /**

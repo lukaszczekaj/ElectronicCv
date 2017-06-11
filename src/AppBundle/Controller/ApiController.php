@@ -14,6 +14,7 @@ use AppBundle\Entity\Education;
 use AppBundle\Entity\Workplace;
 use AppBundle\Entity\AdditionalSkills;
 use AppBundle\Entity\Languages;
+use AppBundle\Entity\Cv;
 
 /**
  * Description of ApiController
@@ -118,6 +119,7 @@ class ApiController extends FOSRestController {
         $existUser->setAddressstreet($data['addressStreet']);
         $existUser->setAddresspost($data['addressPost']);
         $existUser->setMaritalstatus($data['maritalStatus']);
+        $existUser->setPhone($data['phone']);
         $em->flush();
         return new Response('API: Zapisano zmiany', Response::HTTP_OK);
     }
@@ -139,6 +141,10 @@ class ApiController extends FOSRestController {
             return new Response("API: Niepoprawna identyfikacja", Response::HTTP_FORBIDDEN);
         }
         $existUser->setPass(null);
+
+        // $em->getRepository('AppBundle:Education')->findBy(array('userid' => $existUser->getId()));
+
+
         return $existUser;
     }
 
@@ -169,6 +175,31 @@ class ApiController extends FOSRestController {
     }
 
     /**
+     * @Rest\Post("/add-cv/")
+     */
+    public function addCvAction(Request $request) {
+        $token = $request->get('authToken');
+        if (empty($token)) {
+            return new Response("API: Brak kompletnych danych ", Response::HTTP_NOT_ACCEPTABLE);
+        }
+        $em = $this->getDoctrine()->getEntityManager();
+        $existUser = $em->getRepository('AppBundle:User')->findOneBy(array('authtoken' => $token));
+        if (!$existUser) {
+            return new Response("API: Niepoprawna identyfikacja", Response::HTTP_FORBIDDEN);
+        }
+        $data = $request->request->all();
+
+        $cv = new Cv();
+        $cv->setName($data['name']);
+        $cv->setInterests($data['interests']);
+        $cv->setPdfLayout($data['layoutID']);
+        $cv->setUserid($existUser->getId());
+        $em->persist($cv);
+        $em->flush();
+        return new Response('API: Zapisano nowe CV ', Response::HTTP_OK);
+    }
+
+    /**
      * @Rest\Post("/add-education/")
      */
     public function addEducationAction(Request $request) {
@@ -196,7 +227,7 @@ class ApiController extends FOSRestController {
         $em->flush();
         return new Response('API: Dodano wykrztałcenie ', Response::HTTP_OK);
     }
-    
+
     /**
      * @Rest\Post("/add-workplace/")
      */
@@ -225,7 +256,7 @@ class ApiController extends FOSRestController {
         $em->flush();
         return new Response('API: Dodano miejsce pracy ', Response::HTTP_OK);
     }
-    
+
     /**
      * @Rest\Post("/add-languages/")
      */
@@ -249,7 +280,7 @@ class ApiController extends FOSRestController {
         $em->flush();
         return new Response('API: Dodano język ', Response::HTTP_OK);
     }
-    
+
     /**
      * @Rest\Post("/add-additional-skills/")
      */
@@ -291,7 +322,45 @@ class ApiController extends FOSRestController {
         $allEducation = $em->getRepository('AppBundle:Education')->findBy(array('userid' => $existUser->getId()));
         return $allEducation;
     }
-    
+
+    /**
+     * @Rest\Get("/list-cv/{token}")
+     */
+    public function getUserCvsAction($token) {
+        if (empty($token)) {
+            return new Response("API: Brak kompletnych danych ", Response::HTTP_NOT_ACCEPTABLE);
+        }
+        $em = $this->getDoctrine()->getEntityManager();
+        $existUser = $em->getRepository('AppBundle:User')->findOneBy(array('authtoken' => $token));
+        if (!$existUser) {
+            return new Response("API: Niepoprawna identyfikacja", Response::HTTP_FORBIDDEN);
+        }
+        $return = $em->getRepository('AppBundle:Cv')->findBy(array('userid' => $existUser->getId()));
+        return $return;
+    }
+
+    /**
+     * @Rest\Get("/get-cv/{token}/{id}")
+     */
+    public function getUserCvAction($token, $id) {
+        if (empty($token)) {
+            return new Response("API: Brak kompletnych danych ", Response::HTTP_NOT_ACCEPTABLE);
+        }
+        $em = $this->getDoctrine()->getEntityManager();
+        $existUser = $em->getRepository('AppBundle:User')->findOneBy(array('authtoken' => $token));
+        if (!$existUser) {
+            return new Response("API: Niepoprawna identyfikacja", Response::HTTP_FORBIDDEN);
+        }
+        $row = $em->getRepository('AppBundle:Cv')->find($id);
+        if (empty($row)) {
+            return new Response("Brak danych", Response::HTTP_NOT_FOUND);
+        }
+        if ($row->getUserid() !== $existUser->getId()) {
+            return new Response("Brak uprawnień", Response::HTTP_UNAUTHORIZED);
+        }
+        return $row;
+    }
+
     /**
      * @Rest\Get("/list-languages/{token}")
      */
@@ -307,7 +376,7 @@ class ApiController extends FOSRestController {
         $return = $em->getRepository('AppBundle:Languages')->findBy(array('userid' => $existUser->getId()));
         return $return;
     }
-    
+
     /**
      * @Rest\Get("/list-additional-skills/{token}")
      */
@@ -323,7 +392,7 @@ class ApiController extends FOSRestController {
         $return = $em->getRepository('AppBundle:AdditionalSkills')->findBy(array('userid' => $existUser->getId()));
         return $return;
     }
-    
+
     /**
      * @Rest\Get("/list-workplace/{token}")
      */
@@ -365,7 +434,7 @@ class ApiController extends FOSRestController {
         $em->flush();
         return new Response("Wykrztałcenie usunięte");
     }
-    
+
     /**
      * @Rest\Delete("/remove-workplace/{token}/{id}")
      */
@@ -391,7 +460,7 @@ class ApiController extends FOSRestController {
         $em->flush();
         return new Response("Miejsce pracy usunięte");
     }
-    
+
     /**
      * @Rest\Delete("/remove-languages/{token}/{id}")
      */
@@ -417,7 +486,7 @@ class ApiController extends FOSRestController {
         $em->flush();
         return new Response("Miejsce pracy usunięte");
     }
-    
+
     /**
      * @Rest\Delete("/remove-additional-skills/{token}/{id}")
      */

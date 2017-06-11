@@ -24,12 +24,21 @@
         <option name="fixed"/>
       </options>
     </field>
+    <field name="phone" type="string" column="phone" length="30" nullable="true">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
     <field name="imageurl" type="text" column="imageUrl" length="65535" nullable="true">
       <options>
         <option name="fixed"/>
       </options>
     </field>
-    <field name="dateregister" type="datetime" column="dateRegister" nullable="true"/>
+    <field name="dateregister" type="datetime" column="dateRegister" nullable="false">
+      <options>
+        <option name="default">CURRENT_TIMESTAMP</option>
+      </options>
+    </field>
     <field name="datelastlogon" type="datetime" column="dateLastLogon" nullable="true"/>
     <field name="birthdate" type="datetime" column="birthDate" nullable="true"/>
     <field name="maritalstatus" type="string" column="maritalStatus" length="255" nullable="true">
