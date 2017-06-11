@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * User
  *
- * @ORM\Table(name="user", uniqueConstraints={@ORM\UniqueConstraint(name="authToken", columns={"authToken"})})
+ * @ORM\Table(name="user")
  * @ORM\Entity
  */
 class User
