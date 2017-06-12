@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Czas wygenerowania: 11 Cze 2017, 15:08
+-- Czas wygenerowania: 12 Cze 2017, 12:30
 -- Wersja serwera: 5.5.55-0ubuntu0.14.04.1
--- Wersja PHP: 5.6.30-11+deb.sury.org~trusty+3
+-- Wersja PHP: 5.6.30-12~ubuntu14.04.1+deb.sury.org+1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -32,7 +32,14 @@ CREATE TABLE IF NOT EXISTS `additional_skills` (
   `date` timestamp NULL DEFAULT NULL,
   `description` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+--
+-- Zrzut danych tabeli `additional_skills`
+--
+
+INSERT INTO `additional_skills` (`id`, `userid`, `date`, `description`) VALUES
+(1, 1, '2017-06-21 10:10:54', 'gnfbdgvssc');
 
 -- --------------------------------------------------------
 
@@ -72,7 +79,7 @@ CREATE TABLE IF NOT EXISTS `cv` (
   `list_additional_skills` text,
   `list_languages` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
 
 -- --------------------------------------------------------
 
@@ -111,7 +118,14 @@ CREATE TABLE IF NOT EXISTS `languages` (
   `name` varchar(255) DEFAULT NULL,
   `description` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+--
+-- Zrzut danych tabeli `languages`
+--
+
+INSERT INTO `languages` (`id`, `userid`, `name`, `description`) VALUES
+(1, 1, 'zczcs234234', 'zsczsczczsc');
 
 -- --------------------------------------------------------
 
@@ -125,6 +139,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `pass` varchar(64) NOT NULL,
   `firstName` varchar(100) DEFAULT NULL,
   `lastName` varchar(100) DEFAULT NULL,
+  `phone` varchar(25) DEFAULT NULL,
   `imageUrl` text,
   `dateRegister` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `dateLastLogon` datetime DEFAULT NULL,
@@ -143,8 +158,8 @@ CREATE TABLE IF NOT EXISTS `user` (
 -- Zrzut danych tabeli `user`
 --
 
-INSERT INTO `user` (`id`, `mail`, `pass`, `firstName`, `lastName`, `imageUrl`, `dateRegister`, `dateLastLogon`, `birthDate`, `maritalStatus`, `birthPlace`, `addressStreet`, `addressPost`, `appRoleId`, `status`, `authToken`) VALUES
-(1, 'test@test.pl', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'Tester', 'Testowy', NULL, '2017-06-11 12:52:06', NULL, '1991-06-01 15:04:44', 'Kawaler', 'Kielce', 'Zagórska 72', '23-324 Kielce', 2, 1, 'dfa7d9dbbb9a99989416827a14890e61');
+INSERT INTO `user` (`id`, `mail`, `pass`, `firstName`, `lastName`, `phone`, `imageUrl`, `dateRegister`, `dateLastLogon`, `birthDate`, `maritalStatus`, `birthPlace`, `addressStreet`, `addressPost`, `appRoleId`, `status`, `authToken`) VALUES
+(1, 'test@test.pl', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'Tester', 'Testowy', '876746678', NULL, '2017-06-11 12:52:06', NULL, '1991-06-01 15:04:44', 'Kawaler', 'Kielce', 'Zagórska 72', '23-324 Kielce', 2, 1, '3c7ec236208b20737a46f44ce964b1f8');
 
 -- --------------------------------------------------------
 
@@ -159,7 +174,15 @@ CREATE TABLE IF NOT EXISTS `workplace` (
   `date_to` timestamp NULL DEFAULT NULL,
   `description` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+
+--
+-- Zrzut danych tabeli `workplace`
+--
+
+INSERT INTO `workplace` (`id`, `userid`, `date_of`, `date_to`, `description`) VALUES
+(1, 1, '2017-06-22 10:10:31', '2017-06-21 10:10:31', 'ascasc'),
+(2, 1, '2017-06-14 10:10:41', '2017-06-28 10:10:41', 'ascacscascasc');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

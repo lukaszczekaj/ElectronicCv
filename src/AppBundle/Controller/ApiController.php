@@ -448,6 +448,32 @@ class ApiController extends FOSRestController {
         $em->flush();
         return new Response("Wykrztałcenie usunięte");
     }
+    
+    /**
+     * @Rest\Delete("/remove-cv/{token}/{id}")
+     */
+    public function deleteCvAction($token, $id) {
+        if (empty($token)) {
+            return new Response("API: Brak kompletnych danych ", Response::HTTP_NOT_ACCEPTABLE);
+        }
+        $em = $this->getDoctrine()->getEntityManager();
+        $existUser = $em->getRepository('AppBundle:User')->findOneBy(array('authtoken' => $token));
+        if (!$existUser) {
+            return new Response("API: Niepoprawna identyfikacja", Response::HTTP_FORBIDDEN);
+        }
+
+        $row = $em->getRepository('AppBundle:Cv')->find($id);
+
+        if (empty($row)) {
+            return new Response("API: Brak danych", Response::HTTP_NOT_FOUND);
+        }
+        if ($row->getUserid() !== $existUser->getId()) {
+            return new Response("API: Brak uprawnień", Response::HTTP_UNAUTHORIZED);
+        }
+        $em->remove($row);
+        $em->flush();
+        return new Response("Cv usunięte");
+    }
 
     /**
      * @Rest\Delete("/remove-workplace/{token}/{id}")
