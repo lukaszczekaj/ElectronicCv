@@ -43,7 +43,7 @@ class User
     /**
      * @var string
      *
-     * @ORM\Column(name="phone", type="string", length=30, nullable=true)
+     * @ORM\Column(name="phone", type="string", length=25, nullable=true)
      */
     private $phone;
 

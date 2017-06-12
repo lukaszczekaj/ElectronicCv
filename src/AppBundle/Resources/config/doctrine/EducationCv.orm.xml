@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="AppBundle\Entity\EducationCv" table="education_cv">
+    <indexes>
+      <index name="fk_education_cv_educationid_idx" columns="education_id"/>
+      <index name="fk_education_cv_cvid_idx" columns="cv_id"/>
+    </indexes>
+    <id name="ideducationCv" type="integer" column="ideducation_cv">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <many-to-one field="cv" target-entity="Cv" fetch="LAZY">
+      <join-columns>
+        <join-column name="cv_id" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="education" target-entity="Education" fetch="LAZY">
+      <join-columns>
+        <join-column name="education_id" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

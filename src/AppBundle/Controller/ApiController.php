@@ -9,12 +9,17 @@ use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\View\View;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use AppBundle\Entity\User;
 use AppBundle\Entity\Education;
 use AppBundle\Entity\Workplace;
 use AppBundle\Entity\AdditionalSkills;
 use AppBundle\Entity\Languages;
 use AppBundle\Entity\Cv;
+use AppBundle\Entity\EducationCv;
 
 /**
  * Description of ApiController
@@ -141,10 +146,6 @@ class ApiController extends FOSRestController {
             return new Response("API: Niepoprawna identyfikacja", Response::HTTP_FORBIDDEN);
         }
         $existUser->setPass(null);
-
-        // $em->getRepository('AppBundle:Education')->findBy(array('userid' => $existUser->getId()));
-
-
         return $existUser;
     }
 
@@ -194,6 +195,19 @@ class ApiController extends FOSRestController {
         $cv->setInterests($data['interests']);
         $cv->setPdfLayout($data['layoutID']);
         $cv->setUserid($existUser->getId());
+        if (isset($data['education'])) {
+            $cv->setListEducation($data['education']);
+        }
+        if (isset($data['workplace'])) {
+            $cv->setListWorkplace($data['workplace']);
+        }
+        if (isset($data['additionalSkills'])) {
+            $cv->setListAdditionalSkills($data['additionalSkills']);
+        }
+        if (isset($data['languages'])) {
+            $cv->setListLanguages($data['languages']);
+        }
+
         $em->persist($cv);
         $em->flush();
         return new Response('API: Zapisano nowe CV ', Response::HTTP_OK);
@@ -353,10 +367,10 @@ class ApiController extends FOSRestController {
         }
         $row = $em->getRepository('AppBundle:Cv')->find($id);
         if (empty($row)) {
-            return new Response("Brak danych", Response::HTTP_NOT_FOUND);
+            return new Response("API: Brak danych", Response::HTTP_NOT_FOUND);
         }
         if ($row->getUserid() !== $existUser->getId()) {
-            return new Response("Brak uprawnień", Response::HTTP_UNAUTHORIZED);
+            return new Response("API: Brak uprawnień", Response::HTTP_UNAUTHORIZED);
         }
         return $row;
     }
@@ -425,10 +439,10 @@ class ApiController extends FOSRestController {
         $row = $em->getRepository('AppBundle:Education')->find($id);
 
         if (empty($row)) {
-            return new Response("Brak danych", Response::HTTP_NOT_FOUND);
+            return new Response("API: Brak danych", Response::HTTP_NOT_FOUND);
         }
         if ($row->getUserid() !== $existUser->getId()) {
-            return new Response("Brak uprawnień", Response::HTTP_UNAUTHORIZED);
+            return new Response("API: Brak uprawnień", Response::HTTP_UNAUTHORIZED);
         }
         $em->remove($row);
         $em->flush();
@@ -451,10 +465,10 @@ class ApiController extends FOSRestController {
         $row = $em->getRepository('AppBundle:Workplace')->find($id);
 
         if (empty($row)) {
-            return new Response("Brak danych", Response::HTTP_NOT_FOUND);
+            return new Response("API: Brak danych", Response::HTTP_NOT_FOUND);
         }
         if ($row->getUserid() !== $existUser->getId()) {
-            return new Response("Brak uprawnień", Response::HTTP_UNAUTHORIZED);
+            return new Response("API: Brak uprawnień", Response::HTTP_UNAUTHORIZED);
         }
         $em->remove($row);
         $em->flush();
@@ -477,10 +491,10 @@ class ApiController extends FOSRestController {
         $row = $em->getRepository('AppBundle:Languages')->find($id);
 
         if (empty($row)) {
-            return new Response("Brak danych", Response::HTTP_NOT_FOUND);
+            return new Response("API: Brak danych", Response::HTTP_NOT_FOUND);
         }
         if ($row->getUserid() !== $existUser->getId()) {
-            return new Response("Brak uprawnień", Response::HTTP_UNAUTHORIZED);
+            return new Response("API: Brak uprawnień", Response::HTTP_UNAUTHORIZED);
         }
         $em->remove($row);
         $em->flush();
@@ -506,7 +520,7 @@ class ApiController extends FOSRestController {
             return new Response("Brak danych", Response::HTTP_NOT_FOUND);
         }
         if ($row->getUserid() !== $existUser->getId()) {
-            return new Response("Brak uprawnień", Response::HTTP_UNAUTHORIZED);
+            return new Response("API: Brak uprawnień", Response::HTTP_UNAUTHORIZED);
         }
         $em->remove($row);
         $em->flush();

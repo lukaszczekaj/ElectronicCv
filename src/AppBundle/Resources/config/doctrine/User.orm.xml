@@ -24,7 +24,7 @@
         <option name="fixed"/>
       </options>
     </field>
-    <field name="phone" type="string" column="phone" length="30" nullable="true">
+    <field name="phone" type="string" column="phone" length="25" nullable="true">
       <options>
         <option name="fixed"/>
       </options>

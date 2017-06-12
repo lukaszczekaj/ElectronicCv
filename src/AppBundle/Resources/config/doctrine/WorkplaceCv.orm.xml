@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="AppBundle\Entity\WorkplaceCv" table="workplace_cv">
+    <indexes>
+      <index name="fk_workplace_cv_workplaceid_idx" columns="workplace_id"/>
+      <index name="fk_workplace_cv_cvid_idx" columns="cv_id"/>
+    </indexes>
+    <id name="idworkplaceCv" type="integer" column="idworkplace_cv">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <many-to-one field="cv" target-entity="Cv" fetch="LAZY">
+      <join-columns>
+        <join-column name="cv_id" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="workplace" target-entity="Workplace" fetch="LAZY">
+      <join-columns>
+        <join-column name="workplace_id" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>
