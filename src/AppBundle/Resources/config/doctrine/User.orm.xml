@@ -29,7 +29,7 @@
         <option name="fixed"/>
       </options>
     </field>
-    <field name="imageurl" type="text" column="imageUrl" length="65535" nullable="true">
+    <field name="image" type="text" column="image" length="16777215" nullable="true">
       <options>
         <option name="fixed"/>
       </options>

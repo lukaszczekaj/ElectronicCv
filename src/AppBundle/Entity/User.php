@@ -50,9 +50,9 @@ class User
     /**
      * @var string
      *
-     * @ORM\Column(name="imageUrl", type="text", length=65535, nullable=true)
+     * @ORM\Column(name="image", type="text", length=16777215, nullable=true)
      */
-    private $imageurl;
+    private $image;
 
     /**
      * @var \DateTime
@@ -256,27 +256,27 @@ class User
     }
 
     /**
-     * Set imageurl
+     * Set image
      *
-     * @param string $imageurl
+     * @param string $image
      *
      * @return User
      */
-    public function setImageurl($imageurl)
+    public function setImage($image)
     {
-        $this->imageurl = $imageurl;
+        $this->image = $image;
 
         return $this;
     }
 
     /**
-     * Get imageurl
+     * Get image
      *
      * @return string
      */
-    public function getImageurl()
+    public function getImage()
     {
-        return $this->imageurl;
+        return $this->image;
     }
 
     /**

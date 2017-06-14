@@ -115,16 +115,33 @@ class ApiController extends FOSRestController {
             return new Response("API: Niepoprawna identyfikacja", Response::HTTP_FORBIDDEN);
         }
         $data = $request->request->all();
-        $existUser->setFirstname($data['firstName']);
-        $existUser->setLastname($data['lastName']);
+        if (isset($data['firstName']) && !empty($data['firstName'])) {
+            $existUser->setFirstname($data['firstName']);
+        }
+        if (isset($data['lastName']) && !empty($data['lastName'])) {
+            $existUser->setLastname($data['lastName']);
+        }
         if (isset($data['birthDate']) && !empty($data['birthDate'])) {
             $existUser->setBirthdate(\DateTime::createFromFormat("m/d/Y", $data['birthDate']));
         }
-        $existUser->setBirthplace($data['birthPlace']);
-        $existUser->setAddressstreet($data['addressStreet']);
-        $existUser->setAddresspost($data['addressPost']);
-        $existUser->setMaritalstatus($data['maritalStatus']);
-        $existUser->setPhone($data['phone']);
+        if (isset($data['birthPlace']) && !empty($data['birthPlace'])) {
+            $existUser->setBirthplace($data['birthPlace']);
+        }
+        if (isset($data['addressStreet']) && !empty($data['addressStreet'])) {
+            $existUser->setAddressstreet($data['addressStreet']);
+        }
+        if (isset($data['addressPost']) && !empty($data['addressPost'])) {
+            $existUser->setAddresspost($data['addressPost']);
+        }
+        if (isset($data['maritalStatus']) && !empty($data['maritalStatus'])) {
+            $existUser->setMaritalstatus($data['maritalStatus']);
+        }
+        if (isset($data['phone']) && !empty($data['phone'])) {
+            $existUser->setPhone($data['phone']);
+        }
+        if (isset($data['image']) && !empty($data['image'])) {
+            $existUser->setImage($data['image']);
+        }
         $em->flush();
         return new Response('API: Zapisano zmiany', Response::HTTP_OK);
     }
@@ -448,7 +465,7 @@ class ApiController extends FOSRestController {
         $em->flush();
         return new Response("Wykrztałcenie usunięte");
     }
-    
+
     /**
      * @Rest\Delete("/remove-cv/{token}/{id}")
      */
