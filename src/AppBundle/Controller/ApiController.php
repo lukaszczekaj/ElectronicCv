@@ -96,7 +96,8 @@ class ApiController extends FOSRestController {
         $response = array(
             'msg' => 'Zarejestrowano poprawnie',
             'authToken' => $existUser->getAuthtoken(),
-            'name' => sprintf('%s %s', $existUser->getFirstname(), $existUser->getLastname())
+            'name' => sprintf('%s %s', $existUser->getFirstname(), $existUser->getLastname()),
+            'profilePicture' => $existUser->getImage(),
         );
         return new Response(json_encode($response), Response::HTTP_OK);
     }
