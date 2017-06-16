@@ -20,6 +20,7 @@ use AppBundle\Entity\AdditionalSkills;
 use AppBundle\Entity\Languages;
 use AppBundle\Entity\Cv;
 use AppBundle\Entity\EducationCv;
+use AppBundle\Entity\Approle;
 
 /**
  * Description of ApiController
@@ -84,7 +85,9 @@ class ApiController extends FOSRestController {
         if (!$existUser) {
             return new Response("API: Niepoprawne dane logowania", Response::HTTP_NOT_ACCEPTABLE);
         }
-
+        if (!$existUser->getStatus()) {
+            return new Response("API: Konto jest nieaktywne", Response::HTTP_NOT_ACCEPTABLE);
+        }
         if ($existUser->getPass() !== hash('sha256', $pass)) {
             return new Response("API: Niepoprawne dane logowania", Response::HTTP_NOT_ACCEPTABLE);
         }
@@ -98,6 +101,7 @@ class ApiController extends FOSRestController {
             'authToken' => $existUser->getAuthtoken(),
             'name' => sprintf('%s %s', $existUser->getFirstname(), $existUser->getLastname()),
             'profilePicture' => $existUser->getImage(),
+            'id' => $existUser->getId(),
         );
         return new Response(json_encode($response), Response::HTTP_OK);
     }
@@ -164,7 +168,17 @@ class ApiController extends FOSRestController {
             return new Response("API: Niepoprawna identyfikacja", Response::HTTP_FORBIDDEN);
         }
         $existUser->setPass(null);
-        return $existUser;
+        $em = $this->getDoctrine()->getEntityManager();
+        $userInfo = array(
+            'countCv' => sizeof($em->getRepository('AppBundle:Cv')->findBy(array('userid' => $existUser->getId()))),
+            'countEducation' => sizeof($em->getRepository('AppBundle:Education')->findBy(array('userid' => $existUser->getId()))),
+            'countLanguages' => sizeof($em->getRepository('AppBundle:Languages')->findBy(array('userid' => $existUser->getId()))),
+            'countWorkplace' => sizeof($em->getRepository('AppBundle:Workplace')->findBy(array('userid' => $existUser->getId()))),
+            'countAdditionalSkills' => sizeof($em->getRepository('AppBundle:AdditionalSkills')->findBy(array('userid' => $existUser->getId())))
+        );
+
+
+        return array('user' => $existUser, 'userInfo' => $userInfo);
     }
 
     /**
@@ -422,6 +436,22 @@ class ApiController extends FOSRestController {
             return new Response("API: Niepoprawna identyfikacja", Response::HTTP_FORBIDDEN);
         }
         $return = $em->getRepository('AppBundle:AdditionalSkills')->findBy(array('userid' => $existUser->getId()));
+        return $return;
+    }
+
+    /**
+     * @Rest\Get("/list-app-roles/{token}")
+     */
+    public function getApproleAction($token) {
+        if (empty($token)) {
+            return new Response("API: Brak kompletnych danych ", Response::HTTP_NOT_ACCEPTABLE);
+        }
+        $em = $this->getDoctrine()->getEntityManager();
+        $existUser = $em->getRepository('AppBundle:User')->findOneBy(array('authtoken' => $token));
+        if (!$existUser) {
+            return new Response("API: Niepoprawna identyfikacja", Response::HTTP_FORBIDDEN);
+        }
+        $return = $em->getRepository('AppBundle:Approle')->findAll();
         return $return;
     }
 
